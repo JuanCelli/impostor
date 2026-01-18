@@ -127,7 +127,7 @@ class Player:
 
     async def send_state_in_round(self, character:str):
         data_ws = {
-            "code_ws_msj": 2,
+            "code_ws": 2,
             "data": self.info_in_round(character)
         }
         await self.websocket.send_json(data_ws)
@@ -277,9 +277,9 @@ class ManagerConnection:
         if player in self.active_players:
             self._active_players.remove(player)
 
-    async def broadcast(self, data: dict, code_ws_msj: int):
+    async def broadcast(self, data: dict, code_ws: int):
         data_ws = {
-            "code_ws_msj": code_ws_msj,
+            "code_ws": code_ws,
             "data": data
         }
 

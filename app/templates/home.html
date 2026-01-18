@@ -50,12 +50,12 @@
             ws.onmessage = (event) => {
                 let ws_data = JSON.parse(event.data)
 
-                if (ws_data.code_ws_msj == 1){
+                if (ws_data.code_ws == 1){
                     const waitingState = ws_data.data;
                     console.log(waitingState)
                     updateWatingState(playerName, waitingState)
                 }
-                else if (ws_data.code_ws_msj == 2){
+                else if (ws_data.code_ws == 2){
                     const gameState = ws_data.data;
                     console.log("Estado de juego recibido:", gameState);
 
