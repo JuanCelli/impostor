@@ -1,7 +1,8 @@
 import random
 from typing import List, Optional, Dict, Any
-from models.player import Player
-from services.room_service import RoomService
+
+from app.models.player import Player
+from app.services.room_service import RoomService
 
 
 class GameService:

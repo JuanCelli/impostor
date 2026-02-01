@@ -1,6 +1,7 @@
-from typing import Dict, Optional
-from services.game_service import GameService
 import uuid
+from typing import Dict, Optional
+
+from app.services.game_service import GameService
 
 
 class RoomManager:

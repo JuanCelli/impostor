@@ -1,7 +1,9 @@
-from fastapi import WebSocket, WebSocketDisconnect, Query
-from models.player import Player
-from services.room_manager import RoomManager
 from typing import Optional
+
+from fastapi import WebSocket, WebSocketDisconnect, Query
+
+from app.models.player import Player
+from app.services.room_manager import RoomManager
 
 
 class WebSocketRoutes:

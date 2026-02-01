@@ -1,4 +1,3 @@
-from routes.websocket_routes import WebSocketRoutes
-from routes.http_routes import HTTPRoutes
+from app.routes.websocket_routes import WebSocketRoutes
 
-__all__ = ["WebSocketRoutes", "HTTPRoutes"]
+__all__ = ["WebSocketRoutes"]

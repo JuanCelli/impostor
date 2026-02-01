@@ -1,6 +1,8 @@
-from models.player import Player
-from fastapi import WebSocket
 from typing import List, Dict, Any, Optional
+
+from fastapi import WebSocket
+
+from app.models.player import Player
 
 
 class RoomService:
