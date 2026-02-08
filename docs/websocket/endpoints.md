@@ -27,13 +27,13 @@ Actualmente no hay autenticación. El acceso es libre mediante `player_name`.
 ### Parámetros Comunes
 
 - **`player_name`** (query, opcional): Nombre del jugador. Si se omite o es `null`, la conexión se rechaza.
-- **`room_id`** (path, opcional): ID de la sala. Se genera automáticamente si no existe.
+- **`room_id`** (path, requerido): ID de la sala. Debe existir; crear salas se realiza mediante el endpoint HTTP `POST /rooms`.
 
 ---
 
 ## Endpoint: `/ws/{room_id}`
 
-Conecta a una sala existente o la crea si no existe.
+Conecta a una sala existente. El `room_id` debe haberse generado previamente mediante `POST /rooms`.
 
 ### Especificación
 
@@ -49,8 +49,8 @@ Conecta a una sala existente o la crea si no existe.
 #### Path Parameters
 - **`room_id`** (string, requerido)
   - ID único de la sala
-  - Si no existe, se crea automáticamente
-  - Ejemplo: `abc123`, `room-001`, `game-session-1`
+  - Debe existir; crea salas via `POST /rooms`
+  - Ejemplo: `abc12345`, `room-001`, `game-session-1`
 
 #### Query Parameters
 - **`player_name`** (string, requerido)
@@ -90,44 +90,30 @@ El cliente puede enviar mensajes JSON con las siguientes acciones:
 
 ---
 
-## Endpoint: `/ws`
+## HTTP Endpoint: `POST /rooms`
 
-Crea una nueva sala automáticamente y conecta el jugador.
+Genera una nueva sala y devuelve el `room_id` que debe usarse para conectarse por WebSocket.
 
 ### Especificación
 
 | Propiedad | Valor |
 |-----------|-------|
-| **Path** | `/ws` |
-| **Método** | WebSocket |
-| **Nombre interno** | `websocket_without_room` |
-| **Descripción** | Crea una sala nueva automáticamente |
+| **Path** | `/rooms` |
+| **Método** | `POST` |
+| **Descripción** | Crea una sala nueva y devuelve `room_id` |
 
-### Parámetros
+### Respuesta
 
-#### Query Parameters
-- **`player_name`** (string, requerido)
-  - Nombre del jugador que se conecta
-  - Si se omite o es el string `"null"`, la conexión se rechaza
-  - Ejemplo: `?player_name=Carlos`, `?player_name=Sophia`
-
-### Ejemplo de Conexión
-
-```
-ws://localhost:8000/ws?player_name=Carlos
-wss://api.example.com/ws?player_name=Sophia
+```json
+{
+  "room_id": "abc12345"
+}
 ```
 
-### Comportamiento
+### Flujo recomendado
 
-1. Se genera automáticamente un ID único para la nueva sala (formato: `8 caracteres aleatorios`)
-2. El primer jugador que se conecta se convierte en **administrador** de la sala
-3. Se asignan personajes disponibles a los jugadores según la cuota configurada (actualmente 2 jugadores)
-4. Se envía el estado inicial de la sala a todos los jugadores conectados
-
-### Mensajes Esperados desde Cliente
-
-Igual que el endpoint `/ws/{room_id}`. Ver sección [Mensajes Esperados](#mensajes-esperados).
+1. Cliente realiza `POST /rooms` para obtener `room_id`.
+2. Cliente se conecta a `ws://.../ws/{room_id}?player_name=...`.
 
 ---
 

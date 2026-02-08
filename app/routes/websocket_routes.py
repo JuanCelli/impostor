@@ -13,9 +13,9 @@ class WebSocketRoutes:
         self.room_manager = room_manager
     
     async def handle_connection(
-        self, 
-        websocket: WebSocket, 
-        room_id: Optional[str] = None,
+        self,
+        websocket: WebSocket,
+        room_id: str,
         player_name: Optional[str] = Query(None)
     ) -> None:
         """
@@ -31,8 +31,15 @@ class WebSocketRoutes:
         if not player_name or player_name == "null":
             return None
         
-        # Obtener o crear sala
-        room_id, game_service = self.room_manager.get_or_create_room(room_id)
+        # Obtener sala existente
+        game_service = self.room_manager.get_room(room_id)
+        if game_service is None:
+            # Sala inexistente: cerrar conexión
+            try:
+                await websocket.close()
+            except:
+                pass
+            return None
         
         # Crear jugador
         player = Player(player_name)

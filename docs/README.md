@@ -33,8 +33,19 @@ python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 
 ### Conectarse a una sala WebSocket
 
+1. Crear una sala (POST `/rooms`) para obtener un `room_id`.
+
+```bash
+curl -s -X POST http://127.0.0.1:8000/rooms | jq
+# => { "room_id": "abc12345" }
+```
+
+2. Conectarse a la sala usando `room_id`:
+
 ```javascript
-const ws = new WebSocket('ws://localhost:8000/ws?player_name=Juan');
+const roomId = 'abc12345';
+const playerName = 'Juan';
+const ws = new WebSocket(`ws://localhost:8000/ws/${roomId}?player_name=${playerName}`);
 
 ws.onmessage = (event) => {
   console.log(JSON.parse(event.data));

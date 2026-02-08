@@ -1,6 +1,7 @@
 from typing import Optional
 
 from fastapi import FastAPI, WebSocket
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from app.characters.animals import characters as animals
@@ -34,6 +35,14 @@ app = FastAPI(
 )
 
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # o ["*"] en dev
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Rutas WebSocket
 @app.websocket(
     "/ws/{room_id}",
@@ -47,12 +56,8 @@ async def websocket_with_room(
     await ws_routes.handle_connection(websocket, room_id, player_name)
 
 
-@app.websocket(
-    "/ws",
-    name="websocket_without_room"
-)
-async def websocket_without_room(
-    websocket: WebSocket,
-    player_name: Optional[str] = None
-):
-    await ws_routes.handle_connection(websocket, None, player_name)
+# Endpoint para crear una nueva sala (genera room_id)
+@app.post("/rooms", name="create_room")
+async def create_room():
+    room_id, _ = room_manager.get_or_create_room(None)
+    return {"room_id": room_id}
