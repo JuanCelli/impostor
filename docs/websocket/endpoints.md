@@ -188,8 +188,8 @@ Se envía cuando comienza una nueva ronda. Contiene información específica del
   "characters": ["Oso", "Gato", "Perro"],
   "round_number": 1,
   "players": [
-    {"name": "Juan", "alive": true},
-    {"name": "María", "alive": true}
+    {"name": "Juan", "is_impostor": true, "is_first": false,"is_admin": true},
+    {"name": "María", "is_impostor": false, "is_first": true, "is_admin": false}
   ]
 }
 ```
