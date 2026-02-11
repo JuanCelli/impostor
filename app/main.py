@@ -1,4 +1,5 @@
 from typing import Optional
+import logging
 
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,6 +8,12 @@ from pydantic import BaseModel
 from app.characters.animals import characters as animals
 from app.services.room_manager import RoomManager
 from app.routes.websocket_routes import WebSocketRoutes
+from app.routes.character_collection_routes import router as collection_router
+from app.config.database import init_db
+
+# Configurar logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 # Modelos Pydantic para documentación
@@ -42,6 +49,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Registrar rutas
+app.include_router(collection_router)
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Evento de inicio para inicializar la base de datos"""
+    try:
+        logger.info("Inicializando base de datos...")
+        init_db()
+        logger.info("Base de datos inicializada correctamente")
+    except Exception as e:
+        logger.error(f"Error inicializando base de datos: {e}")
 
 # Rutas WebSocket
 @app.websocket(
